@@ -1,7 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import reducer from './chatSlice';
 
-const initialState = {
+interface User {
+  email: string;
+  id: string;
+  name: string;
+  photo: string;
+}
+
+interface AuthState {
+  user: User | null;
+}
+
+const initialState: AuthState = {
   user: null,
 };
 

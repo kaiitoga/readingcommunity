@@ -9,6 +9,7 @@ const __dirname = dirname(__filename);
 const nextConfig = {
   webpack(config) {
     config.resolve.alias = {
+      
       ...config.resolve.alias,
       '@': path.resolve(__dirname, 'src'), // 'src' フォルダをエイリアスとして設定
     };

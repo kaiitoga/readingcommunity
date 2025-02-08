@@ -1,7 +1,13 @@
 "use client";
 import React, { useState } from 'react'
 
-const Hamburger = ({toggleMenu, changeIcon, toggleIcon}) => {
+interface HamburgerMenuProps {
+  toggleMenu: () => void;
+  changeIcon: boolean;
+  toggleIcon: () => void;
+}
+
+const Hamburger = ({toggleMenu, changeIcon, toggleIcon}:HamburgerMenuProps) => {
 
   return (
     <div className="cursor-pointer h-9 w-10 relative ml-auto" onClick={() => {toggleIcon(); toggleMenu();}}>

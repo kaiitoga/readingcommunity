@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { auth, db } from '@/app/firebase';
-import { useDispatch, useSelector } from 'react-redux';
-import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp} from 'firebase/firestore';
+import { auth, db } from '@/firebase';
+import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, DocumentData, QuerySnapshot} from 'firebase/firestore';
 import { installChat } from '../../Redux/Slice/chatSlice';
+import { useAppDispatch, useAppSelector } from '@/Redux/hooks';
 
 
 const Sidebar = () => {
-  const [channels, setChannels] = useState([]);
-  const user = useSelector(state => state.auth.user);
+  const [channels, setChannels] = useState<{id: string; channelName: string;}[]>([]);
+  const user = useAppSelector(state => state.auth.user);
   const q = query(collection(db, "Channels"),orderBy("timestamp", "desc"));
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const addChannel = async () => {
     let channelName = prompt("新しい本について話す");
@@ -31,12 +31,12 @@ const Sidebar = () => {
   useEffect(() => {
 
 
-    onSnapshot(q,(querySnapshot) => {
-      const channelsResults = [];
+    onSnapshot(q,(querySnapshot: QuerySnapshot<DocumentData>) => {
+      const channelsResults: { id: string; channelName:string }[] = [];
       querySnapshot.docs.forEach((doc) => {
         channelsResults.push({
           id: doc.id,
-          channelName: doc.data(),
+          channelName: (doc.data() as { channel: string }).channel,
         })
       })
       setChannels(channelsResults);
@@ -60,23 +60,20 @@ const Sidebar = () => {
               onClick={()=>dispatch(
                 installChat({
                   channelId:channeldata.id,
-                  channelName:channeldata.channelName.channel})
+                  channelName:channeldata.channelName})
                 )}
                 >
-                <h1 className='text-base lg:text-lg hover:text-white duration-1000' >{channeldata.channelName.channel}</h1>
+                <h1 className='text-base lg:text-lg hover:text-white duration-1000' >{channeldata.channelName}</h1>
             </div>
           ))}
         </div>
       </div>
       <div className='flex items-center'>
-        <img src="{user.photo}" alt="test" className='w-11 lg:w-16 h-11 lg:h-16 rounded-full' onClick={() => auth.signOut()}/>
-        <h1 className='ml-4 text-base lg:text-xl'>{user.name}</h1>
+        <img src="{user.photo}" alt="photo" className='w-11 lg:w-16 h-11 lg:h-16 rounded-full' onClick={() => auth.signOut()}/>
+        <h1 className='ml-4 text-base lg:text-xl'>{user?.name}</h1>
       </div>
     </div>
   )
 }
 
 export default Sidebar
-
-
-

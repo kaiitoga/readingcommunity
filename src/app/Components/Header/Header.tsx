@@ -3,11 +3,17 @@ import React, { useEffect, useState } from 'react'
 import HamburgerMenu from './SmallScreen/HamburgerMenu';
 import Hamburger from './SmallScreen/Hamburger';
 import HeaderDesktop from './LargeScreen/HeaderDesktop';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
-const Header = ({ currentPage }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [changeIcon, setChangeIcon] = useState(false);
+const Header = () => {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [changeIcon, setChangeIcon] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<string>("");
+  const path = usePathname();
+
+  useEffect(() => {
+    setCurrentPage(path === "/" ? "" : "Chat");
+  }, [path]);
 
   const toggleIcon = () => {
     setChangeIcon(!changeIcon)
@@ -34,3 +40,5 @@ const Header = ({ currentPage }) => {
 }
 
 export default Header
+
+

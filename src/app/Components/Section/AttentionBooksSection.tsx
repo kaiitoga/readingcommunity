@@ -1,4 +1,4 @@
-import { _NotoSerifJP, _YuseiMagic } from '@/app/layout'
+import { _NotoSerifJP, _YuseiMagic } from '@/layout'
 
 const AttentionBooksSection = () => {
   return (

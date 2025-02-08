@@ -1,18 +1,24 @@
 import React from 'react'
 import Link from 'next/link';
-import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react'
-import { auth, db } from '@/app/firebase';
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp} from 'firebase/firestore';
-import { installChat } from '@/app/Redux/Slice/chatSlice'
+import { auth, db } from '@/firebase';
+import { installChat } from '@/Redux/Slice/chatSlice'
+import { useAppSelector, useAppDispatch } from '@/Redux/hooks';
 
+interface HamburgerMenuProps {
+  menuOpen:boolean;
+  toggleMenu: () => void;
+  toggleIcon: () => void;
+  currentPage: string;
+}
 
-const HamburgerMenu = ({menuOpen, toggleMenu, toggleIcon, currentPage}) => {
+const HamburgerMenu: React.FC<HamburgerMenuProps> = ({menuOpen, toggleMenu, toggleIcon, currentPage}) => {
 
-    const [channels, setChannels] = useState([]);
-    const user = useSelector(state => state.auth.user);
+    const [channels, setChannels] = useState<{ id: string; channelName: { channel: string } }[]>([]);
+    const user = useAppSelector(state => state.auth.user);
     const q = query(collection(db, "Channels"),orderBy("timestamp", "desc"));
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
   const addChannel = async () => {
     let channelName = prompt("新しい本について話す");
@@ -32,11 +38,11 @@ const HamburgerMenu = ({menuOpen, toggleMenu, toggleIcon, currentPage}) => {
 
     useEffect(() => {
       onSnapshot(q,(querySnapshot) => {
-        const channelsResults = [];
+        const channelsResults: { id: string; channelName: { channel: string } }[] = [];
         querySnapshot.docs.forEach((doc) => {
           channelsResults.push({
             id: doc.id,
-            channelName: doc.data(),
+            channelName: doc.data() as { channel: string},
           })
         })
         setChannels(channelsResults);

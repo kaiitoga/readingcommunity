@@ -1,4 +1,4 @@
-import { _NotoSerifJP, _YuseiMagic } from '@/app/layout'
+import { _NotoSerifJP, _YuseiMagic } from '@/layout'
 
 const About = () => {
   return (
@@ -22,3 +22,4 @@ const About = () => {
 }
 
 export default About
+

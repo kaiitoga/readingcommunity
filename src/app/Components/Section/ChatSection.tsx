@@ -1,4 +1,4 @@
-import { _NotoSerifJP, _YuseiMagic } from '@/app/layout'
+import { _NotoSerifJP, _YuseiMagic } from '@/layout'
 import Link from 'next/link'
 const ChatSection = () => {
   return (
@@ -40,5 +40,4 @@ const ChatSection = () => {
   )
 }
 
- 
 export default ChatSection

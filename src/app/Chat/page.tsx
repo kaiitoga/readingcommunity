@@ -1,17 +1,16 @@
 "use client";
 import React, { useEffect } from 'react';
-import Sidebar from './Conponents/Sidebar';
-import Chat from './Conponents/Chat';
+import Sidebar from './ChatComponents/Sidebar';
+import Chat from './ChatComponents/Chat';
 import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import Login from './Conponents/Login';
-import { auth } from '../firebase';
-import { login, logout } from '../Redux/Slice/authSlice';
-
+import Login from './ChatComponents/Login';
+import { auth } from '@/firebase';
+import { login, logout } from '@/Redux/Slice/authSlice';
+import { useAppDispatch, useAppSelector } from '@/Redux/hooks';
 
 const page = () => {
-  const userAuth = useSelector(state => state.auth.user); 
-  const dispatch = useDispatch();
+  const userAuth = useAppSelector(state => state.auth.user); 
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {

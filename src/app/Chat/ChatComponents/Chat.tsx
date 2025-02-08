@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import ChatMessage from './ChatMessage'
-import { useSelector } from 'react-redux'
-import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/app/firebase';
+import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { db } from '@/firebase';
+import { useAppSelector } from '@/Redux/hooks';
 
 const Chat = () => {
   const [inputText, setInputText] = useState("");
-  const [messages, setMessages] = useState([]);
-  const bookTitle = useSelector((state) => state.chat.channelName);
-  const channelId = useSelector((state) => state.chat.channelId);
-  const user = useSelector((state) => state.auth.user)
+  const [messages, setMessages] = useState<{ timestamp: Timestamp; message: string; user: User }[]>([]);
+  const bookTitle = useAppSelector((state) => state.chat.channelName);
+  const channelId = useAppSelector((state) => state.chat.channelId);
+  const user = useAppSelector((state) => state.auth.user)
+
+  interface User {
+    email: string;
+    id: string;
+    name: string;
+    photo: string;
+  }
+
 
   useEffect(() => {
     if (!channelId) return;
@@ -23,7 +31,7 @@ const Chat = () => {
     const  collectionRefOrder = query(collectionRef, orderBy("timestamp", "desc"))
 
     onSnapshot(collectionRefOrder, (snapshot) => {
-      let results = [];
+      let results: {timestamp: Timestamp; message: string; user: User}[] = [];
       snapshot.docs.forEach((doc) => {
         results.push({
           timestamp: doc.data().timestamp,
@@ -35,9 +43,9 @@ const Chat = () => {
     });
   }, [channelId])
 
-  const sendMessage = async (e) => {
+  const sendMessage = async (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    const collectionRef = collection(db, "Channels", channelId, "messages");
+    const collectionRef = collection(db, "Channels", String(channelId), "messages");
     const docRef = await addDoc(collectionRef, {
       message: inputText,
       timestamp: serverTimestamp(),
@@ -88,6 +96,5 @@ const Chat = () => {
 }
 
 export default Chat
-
 
 
